@@ -32,7 +32,6 @@ public class MinioImpl implements Minio {
         String allpath=null;
         InputStream inputStream = null;
         String contentType=null;
-        System.out.println(contentType);
         try {
             inputStream = file.getInputStream();
             String getPath = PathTool.GETPath();
