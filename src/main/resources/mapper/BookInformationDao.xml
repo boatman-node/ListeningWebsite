@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Service.BookInformation">
+
+    <resultMap type="com.entity.BookInformation" id="BookInformationMap">
+        <result property="bookId" column="book_id" jdbcType="BINARY"/>
+        <result property="bookName" column="book_name" jdbcType="VARCHAR"/>
+        <result property="bookType" column="book_type" jdbcType="BINARY"/>
+        <result property="publisherUser" column="publisher_user" jdbcType="BINARY"/>
+        <result property="isAudit" column="is_audit" jdbcType="INTEGER"/>
+        <result property="isComplete" column="is_complete" jdbcType="INTEGER"/>
+        <result property="bookHeadportraitUrl" column="book_headportrait_url" jdbcType="VARCHAR"/>
+        <result property="bookDescription" column="book_description" jdbcType="VARCHAR"/>
+        <result property="collectionQuantity" column="collection_quantity" jdbcType="INTEGER"/>
+        <result property="likesQuantity" column="likes_quantity" jdbcType="INTEGER"/>
+        <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+        <result property="lastLoginChapter" column="last_login_chapter" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BookInformationMap">
+        select
+          book_id, book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter
+        from book_information
+        where book_id = #{bookId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BookInformationMap">
+        select
+          book_id, book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter
+        from book_information
+        <where>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="bookName != null and bookName != ''">
+                and book_name = #{bookName}
+            </if>
+            <if test="bookType != null">
+                and book_type = #{bookType}
+            </if>
+            <if test="publisherUser != null">
+                and publisher_user = #{publisherUser}
+            </if>
+            <if test="isAudit != null">
+                and is_audit = #{isAudit}
+            </if>
+            <if test="isComplete != null">
+                and is_complete = #{isComplete}
+            </if>
+            <if test="bookHeadportraitUrl != null and bookHeadportraitUrl != ''">
+                and book_headportrait_url = #{bookHeadportraitUrl}
+            </if>
+            <if test="bookDescription != null and bookDescription != ''">
+                and book_description = #{bookDescription}
+            </if>
+            <if test="collectionQuantity != null">
+                and collection_quantity = #{collectionQuantity}
+            </if>
+            <if test="likesQuantity != null">
+                and likes_quantity = #{likesQuantity}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+            <if test="lastLoginChapter != null and lastLoginChapter != ''">
+                and last_login_chapter = #{lastLoginChapter}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from book_information
+        <where>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="bookName != null and bookName != ''">
+                and book_name = #{bookName}
+            </if>
+            <if test="bookType != null">
+                and book_type = #{bookType}
+            </if>
+            <if test="publisherUser != null">
+                and publisher_user = #{publisherUser}
+            </if>
+            <if test="isAudit != null">
+                and is_audit = #{isAudit}
+            </if>
+            <if test="isComplete != null">
+                and is_complete = #{isComplete}
+            </if>
+            <if test="bookHeadportraitUrl != null and bookHeadportraitUrl != ''">
+                and book_headportrait_url = #{bookHeadportraitUrl}
+            </if>
+            <if test="bookDescription != null and bookDescription != ''">
+                and book_description = #{bookDescription}
+            </if>
+            <if test="collectionQuantity != null">
+                and collection_quantity = #{collectionQuantity}
+            </if>
+            <if test="likesQuantity != null">
+                and likes_quantity = #{likesQuantity}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+            <if test="lastLoginChapter != null and lastLoginChapter != ''">
+                and last_login_chapter = #{lastLoginChapter}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="bookId" useGeneratedKeys="true">
+        insert into book_information(book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter)
+        values (#{bookName}, #{bookType}, #{publisherUser}, #{isAudit}, #{isComplete}, #{bookHeadportraitUrl}, #{bookDescription}, #{collectionQuantity}, #{likesQuantity}, #{lastLoginTime}, #{lastLoginChapter})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="bookId" useGeneratedKeys="true">
+        insert into book_information(book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.bookName}, #{entity.bookType}, #{entity.publisherUser}, #{entity.isAudit}, #{entity.isComplete}, #{entity.bookHeadportraitUrl}, #{entity.bookDescription}, #{entity.collectionQuantity}, #{entity.likesQuantity}, #{entity.lastLoginTime}, #{entity.lastLoginChapter})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="bookId" useGeneratedKeys="true">
+        insert into book_information(book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.bookName}, #{entity.bookType}, #{entity.publisherUser}, #{entity.isAudit}, #{entity.isComplete}, #{entity.bookHeadportraitUrl}, #{entity.bookDescription}, #{entity.collectionQuantity}, #{entity.likesQuantity}, #{entity.lastLoginTime}, #{entity.lastLoginChapter})
+        </foreach>
+        on duplicate key update
+        book_name = values(book_name),
+        book_type = values(book_type),
+        publisher_user = values(publisher_user),
+        is_audit = values(is_audit),
+        is_complete = values(is_complete),
+        book_headportrait_url = values(book_headportrait_url),
+        book_description = values(book_description),
+        collection_quantity = values(collection_quantity),
+        likes_quantity = values(likes_quantity),
+        last_login_time = values(last_login_time),
+        last_login_chapter = values(last_login_chapter)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update book_information
+        <set>
+            <if test="bookName != null and bookName != ''">
+                book_name = #{bookName},
+            </if>
+            <if test="bookType != null">
+                book_type = #{bookType},
+            </if>
+            <if test="publisherUser != null">
+                publisher_user = #{publisherUser},
+            </if>
+            <if test="isAudit != null">
+                is_audit = #{isAudit},
+            </if>
+            <if test="isComplete != null">
+                is_complete = #{isComplete},
+            </if>
+            <if test="bookHeadportraitUrl != null and bookHeadportraitUrl != ''">
+                book_headportrait_url = #{bookHeadportraitUrl},
+            </if>
+            <if test="bookDescription != null and bookDescription != ''">
+                book_description = #{bookDescription},
+            </if>
+            <if test="collectionQuantity != null">
+                collection_quantity = #{collectionQuantity},
+            </if>
+            <if test="likesQuantity != null">
+                likes_quantity = #{likesQuantity},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="lastLoginChapter != null and lastLoginChapter != ''">
+                last_login_chapter = #{lastLoginChapter},
+            </if>
+        </set>
+        where book_id = #{bookId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from book_information where book_id = #{bookId}
+    </delete>
+
+</mapper>
+

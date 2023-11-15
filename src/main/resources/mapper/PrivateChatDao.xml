@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Service.PrivateChat">
+
+    <resultMap type="com.entity.PrivateChat" id="PrivateChatMap">
+        <result property="dispatcherUserId" column="dispatcher_user_id" jdbcType="BINARY"/>
+        <result property="recipientUserId" column="recipient_user_id" jdbcType="BINARY"/>
+        <result property="dispatcherDate" column="dispatcher_date" jdbcType="TIMESTAMP"/>
+        <result property="isRevocation" column="is_revocation" jdbcType="INTEGER"/>
+        <result property="msg" column="msg" jdbcType="VARCHAR"/>
+        <result property="dispatcherId" column="dispatcher_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="PrivateChatMap">
+        select
+          dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg, dispatcher_id
+        from private_chat
+        where dispatcher_id = #{dispatcherId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="PrivateChatMap">
+        select
+          dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg, dispatcher_id
+        from private_chat
+        <where>
+            <if test="dispatcherUserId != null">
+                and dispatcher_user_id = #{dispatcherUserId}
+            </if>
+            <if test="recipientUserId != null">
+                and recipient_user_id = #{recipientUserId}
+            </if>
+            <if test="dispatcherDate != null">
+                and dispatcher_date = #{dispatcherDate}
+            </if>
+            <if test="isRevocation != null">
+                and is_revocation = #{isRevocation}
+            </if>
+            <if test="msg != null and msg != ''">
+                and msg = #{msg}
+            </if>
+            <if test="dispatcherId != null">
+                and dispatcher_id = #{dispatcherId}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from private_chat
+        <where>
+            <if test="dispatcherUserId != null">
+                and dispatcher_user_id = #{dispatcherUserId}
+            </if>
+            <if test="recipientUserId != null">
+                and recipient_user_id = #{recipientUserId}
+            </if>
+            <if test="dispatcherDate != null">
+                and dispatcher_date = #{dispatcherDate}
+            </if>
+            <if test="isRevocation != null">
+                and is_revocation = #{isRevocation}
+            </if>
+            <if test="msg != null and msg != ''">
+                and msg = #{msg}
+            </if>
+            <if test="dispatcherId != null">
+                and dispatcher_id = #{dispatcherId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="dispatcherId" useGeneratedKeys="true">
+        insert into private_chat(dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg)
+        values (#{dispatcherUserId}, #{recipientUserId}, #{dispatcherDate}, #{isRevocation}, #{msg})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="dispatcherId" useGeneratedKeys="true">
+        insert into private_chat(dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.dispatcherUserId}, #{entity.recipientUserId}, #{entity.dispatcherDate}, #{entity.isRevocation}, #{entity.msg})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="dispatcherId" useGeneratedKeys="true">
+        insert into private_chat(dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.dispatcherUserId}, #{entity.recipientUserId}, #{entity.dispatcherDate}, #{entity.isRevocation}, #{entity.msg})
+        </foreach>
+        on duplicate key update
+        dispatcher_user_id = values(dispatcher_user_id),
+        recipient_user_id = values(recipient_user_id),
+        dispatcher_date = values(dispatcher_date),
+        is_revocation = values(is_revocation),
+        msg = values(msg)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update private_chat
+        <set>
+            <if test="dispatcherUserId != null">
+                dispatcher_user_id = #{dispatcherUserId},
+            </if>
+            <if test="recipientUserId != null">
+                recipient_user_id = #{recipientUserId},
+            </if>
+            <if test="dispatcherDate != null">
+                dispatcher_date = #{dispatcherDate},
+            </if>
+            <if test="isRevocation != null">
+                is_revocation = #{isRevocation},
+            </if>
+            <if test="msg != null and msg != ''">
+                msg = #{msg},
+            </if>
+        </set>
+        where dispatcher_id = #{dispatcherId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from private_chat where dispatcher_id = #{dispatcherId}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Service.UserAudiocoin">
+
+    <resultMap type="com.entity.UserAudiocoin" id="UserAudiocoinMap">
+        <result property="userId" column="user_id" jdbcType="BINARY"/>
+        <result property="audiocoin" column="audiocoin" jdbcType="INTEGER"/>
+        <result property="isVip" column="is_vip" jdbcType="INTEGER"/>
+        <result property="vipStartDate" column="vip_start_date" jdbcType="TIMESTAMP"/>
+        <result property="vipEndDate" column="vip_end_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserAudiocoinMap">
+        select
+          user_id, audiocoin, is_vip, vip_start_date, vip_end_date
+        from user_audiocoin
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserAudiocoinMap">
+        select
+          user_id, audiocoin, is_vip, vip_start_date, vip_end_date
+        from user_audiocoin
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="audiocoin != null">
+                and audiocoin = #{audiocoin}
+            </if>
+            <if test="isVip != null">
+                and is_vip = #{isVip}
+            </if>
+            <if test="vipStartDate != null">
+                and vip_start_date = #{vipStartDate}
+            </if>
+            <if test="vipEndDate != null">
+                and vip_end_date = #{vipEndDate}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user_audiocoin
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="audiocoin != null">
+                and audiocoin = #{audiocoin}
+            </if>
+            <if test="isVip != null">
+                and is_vip = #{isVip}
+            </if>
+            <if test="vipStartDate != null">
+                and vip_start_date = #{vipStartDate}
+            </if>
+            <if test="vipEndDate != null">
+                and vip_end_date = #{vipEndDate}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_audiocoin(audiocoin, is_vip, vip_start_date, vip_end_date)
+        values (#{audiocoin}, #{isVip}, #{vipStartDate}, #{vipEndDate})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_audiocoin(audiocoin, is_vip, vip_start_date, vip_end_date)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.audiocoin}, #{entity.isVip}, #{entity.vipStartDate}, #{entity.vipEndDate})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_audiocoin(audiocoin, is_vip, vip_start_date, vip_end_date)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.audiocoin}, #{entity.isVip}, #{entity.vipStartDate}, #{entity.vipEndDate})
+        </foreach>
+        on duplicate key update
+        audiocoin = values(audiocoin),
+        is_vip = values(is_vip),
+        vip_start_date = values(vip_start_date),
+        vip_end_date = values(vip_end_date)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user_audiocoin
+        <set>
+            <if test="audiocoin != null">
+                audiocoin = #{audiocoin},
+            </if>
+            <if test="isVip != null">
+                is_vip = #{isVip},
+            </if>
+            <if test="vipStartDate != null">
+                vip_start_date = #{vipStartDate},
+            </if>
+            <if test="vipEndDate != null">
+                vip_end_date = #{vipEndDate},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from user_audiocoin where user_id = #{userId}
+    </delete>
+
+</mapper>
+

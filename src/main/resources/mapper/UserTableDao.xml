@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Service.UserTable">
+
+    <resultMap type="com.entity.UserTable" id="UserTableMap">
+        <result property="userId" column="user_id" jdbcType="BINARY"/>
+        <result property="userAccountname" column="user_accountname" jdbcType="VARCHAR"/>
+        <result property="userAccountpassword" column="user_accountpassword" jdbcType="VARCHAR"/>
+        <result property="userEmail" column="user_email" jdbcType="VARCHAR"/>
+        <result property="userRegistrationcode" column="user_registrationcode" jdbcType="VARCHAR"/>
+        <result property="userHeadportraitUrl" column="user_headportrait_url" jdbcType="VARCHAR"/>
+        <result property="userRegistrationdate" column="user_registrationdate" jdbcType="TIMESTAMP"/>
+        <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+        <result property="userSalt" column="user_salt" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserTableMap">
+        select
+          user_id, user_accountname, user_accountpassword, user_email, user_registrationcode, user_headportrait_url, user_registrationdate, last_login_time, user_salt
+        from user_table
+        where user_id = #{userId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserTableMap">
+        select
+          user_id, user_accountname, user_accountpassword, user_email, user_registrationcode, user_headportrait_url, user_registrationdate, last_login_time, user_salt
+        from user_table
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userAccountname != null and userAccountname != ''">
+                and user_accountname = #{userAccountname}
+            </if>
+            <if test="userAccountpassword != null and userAccountpassword != ''">
+                and user_accountpassword = #{userAccountpassword}
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                and user_email = #{userEmail}
+            </if>
+            <if test="userRegistrationcode != null and userRegistrationcode != ''">
+                and user_registrationcode = #{userRegistrationcode}
+            </if>
+            <if test="userHeadportraitUrl != null and userHeadportraitUrl != ''">
+                and user_headportrait_url = #{userHeadportraitUrl}
+            </if>
+            <if test="userRegistrationdate != null">
+                and user_registrationdate = #{userRegistrationdate}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+            <if test="userSalt != null and userSalt != ''">
+                and user_salt = #{userSalt}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from user_table
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="userAccountname != null and userAccountname != ''">
+                and user_accountname = #{userAccountname}
+            </if>
+            <if test="userAccountpassword != null and userAccountpassword != ''">
+                and user_accountpassword = #{userAccountpassword}
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                and user_email = #{userEmail}
+            </if>
+            <if test="userRegistrationcode != null and userRegistrationcode != ''">
+                and user_registrationcode = #{userRegistrationcode}
+            </if>
+            <if test="userHeadportraitUrl != null and userHeadportraitUrl != ''">
+                and user_headportrait_url = #{userHeadportraitUrl}
+            </if>
+            <if test="userRegistrationdate != null">
+                and user_registrationdate = #{userRegistrationdate}
+            </if>
+            <if test="lastLoginTime != null">
+                and last_login_time = #{lastLoginTime}
+            </if>
+            <if test="userSalt != null and userSalt != ''">
+                and user_salt = #{userSalt}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_table(user_accountname, user_accountpassword, user_email, user_registrationcode, user_headportrait_url, user_registrationdate, last_login_time, user_salt)
+        values (#{userAccountname}, #{userAccountpassword}, #{userEmail}, #{userRegistrationcode}, #{userHeadportraitUrl}, #{userRegistrationdate}, #{lastLoginTime}, #{userSalt})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_table(user_accountname, user_accountpassword, user_email, user_registrationcode, user_headportrait_url, user_registrationdate, last_login_time, user_salt)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.userAccountname}, #{entity.userAccountpassword}, #{entity.userEmail}, #{entity.userRegistrationcode}, #{entity.userHeadportraitUrl}, #{entity.userRegistrationdate}, #{entity.lastLoginTime}, #{entity.userSalt})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="userId" useGeneratedKeys="true">
+        insert into user_table(user_accountname, user_accountpassword, user_email, user_registrationcode, user_headportrait_url, user_registrationdate, last_login_time, user_salt)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userAccountname}, #{entity.userAccountpassword}, #{entity.userEmail}, #{entity.userRegistrationcode}, #{entity.userHeadportraitUrl}, #{entity.userRegistrationdate}, #{entity.lastLoginTime}, #{entity.userSalt})
+        </foreach>
+        on duplicate key update
+        user_accountname = values(user_accountname),
+        user_accountpassword = values(user_accountpassword),
+        user_email = values(user_email),
+        user_registrationcode = values(user_registrationcode),
+        user_headportrait_url = values(user_headportrait_url),
+        user_registrationdate = values(user_registrationdate),
+        last_login_time = values(last_login_time),
+        user_salt = values(user_salt)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update user_table
+        <set>
+            <if test="userAccountname != null and userAccountname != ''">
+                user_accountname = #{userAccountname},
+            </if>
+            <if test="userAccountpassword != null and userAccountpassword != ''">
+                user_accountpassword = #{userAccountpassword},
+            </if>
+            <if test="userEmail != null and userEmail != ''">
+                user_email = #{userEmail},
+            </if>
+            <if test="userRegistrationcode != null and userRegistrationcode != ''">
+                user_registrationcode = #{userRegistrationcode},
+            </if>
+            <if test="userHeadportraitUrl != null and userHeadportraitUrl != ''">
+                user_headportrait_url = #{userHeadportraitUrl},
+            </if>
+            <if test="userRegistrationdate != null">
+                user_registrationdate = #{userRegistrationdate},
+            </if>
+            <if test="lastLoginTime != null">
+                last_login_time = #{lastLoginTime},
+            </if>
+            <if test="userSalt != null and userSalt != ''">
+                user_salt = #{userSalt},
+            </if>
+        </set>
+        where user_id = #{userId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from user_table where user_id = #{userId}
+    </delete>
+
+</mapper>
+

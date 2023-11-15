@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Service.VoiceInformation">
+
+    <resultMap type="com.entity.VoiceInformation" id="VoiceInformationMap">
+        <result property="voiceId" column="voice_id" jdbcType="BINARY"/>
+        <result property="bookId" column="book_id" jdbcType="BINARY"/>
+        <result property="voiceDescribed" column="voice_described" jdbcType="VARCHAR"/>
+        <result property="described" column="described" jdbcType="INTEGER"/>
+        <result property="voiceUrl" column="voice_url" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="VoiceInformationMap">
+        select
+          voice_id, book_id, voice_described, described, voice_url
+        from voice_information
+        where voice_id = #{voiceId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="VoiceInformationMap">
+        select
+          voice_id, book_id, voice_described, described, voice_url
+        from voice_information
+        <where>
+            <if test="voiceId != null">
+                and voice_id = #{voiceId}
+            </if>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="voiceDescribed != null and voiceDescribed != ''">
+                and voice_described = #{voiceDescribed}
+            </if>
+            <if test="described != null">
+                and described = #{described}
+            </if>
+            <if test="voiceUrl != null and voiceUrl != ''">
+                and voice_url = #{voiceUrl}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from voice_information
+        <where>
+            <if test="voiceId != null">
+                and voice_id = #{voiceId}
+            </if>
+            <if test="bookId != null">
+                and book_id = #{bookId}
+            </if>
+            <if test="voiceDescribed != null and voiceDescribed != ''">
+                and voice_described = #{voiceDescribed}
+            </if>
+            <if test="described != null">
+                and described = #{described}
+            </if>
+            <if test="voiceUrl != null and voiceUrl != ''">
+                and voice_url = #{voiceUrl}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="voiceId" useGeneratedKeys="true">
+        insert into voice_information(book_id, voice_described, described, voice_url)
+        values (#{bookId}, #{voiceDescribed}, #{described}, #{voiceUrl})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="voiceId" useGeneratedKeys="true">
+        insert into voice_information(book_id, voice_described, described, voice_url)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.bookId}, #{entity.voiceDescribed}, #{entity.described}, #{entity.voiceUrl})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="voiceId" useGeneratedKeys="true">
+        insert into voice_information(book_id, voice_described, described, voice_url)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.bookId}, #{entity.voiceDescribed}, #{entity.described}, #{entity.voiceUrl})
+        </foreach>
+        on duplicate key update
+        book_id = values(book_id),
+        voice_described = values(voice_described),
+        described = values(described),
+        voice_url = values(voice_url)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update voice_information
+        <set>
+            <if test="bookId != null">
+                book_id = #{bookId},
+            </if>
+            <if test="voiceDescribed != null and voiceDescribed != ''">
+                voice_described = #{voiceDescribed},
+            </if>
+            <if test="described != null">
+                described = #{described},
+            </if>
+            <if test="voiceUrl != null and voiceUrl != ''">
+                voice_url = #{voiceUrl},
+            </if>
+        </set>
+        where voice_id = #{voiceId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from voice_information where voice_id = #{voiceId}
+    </delete>
+
+</mapper>
+
