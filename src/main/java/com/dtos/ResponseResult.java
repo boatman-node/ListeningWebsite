@@ -15,4 +15,16 @@ public class ResponseResult <T> implements Serializable {
         private int code;
         private String message;
         private T data;
+
+        public ResponseResult(AppHttpCodeEnum success) {
+                this.code=success.code;
+                this.message=success.getErrorMessage();
+        }
+
+        public ResponseResult(AppHttpCodeEnum success,T data) {
+                this.code=success.code;
+                this.message=success.getErrorMessage();
+                this.data=data;
+        }
+
 }

@@ -1,4 +1,6 @@
 package com.Service.impl;
 
-public class ClassificationtypeImpl {
+import com.Service.Classificationtype;
+
+public class ClassificationtypeImpl implements Classificationtype {
 }

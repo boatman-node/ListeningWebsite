@@ -1,4 +1,6 @@
 package com.Service.impl;
 
-public class UserAudiocoinImpl {
+import com.Service.UserAudiocoin;
+
+public class UserAudiocoinImpl implements UserAudiocoin {
 }

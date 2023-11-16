@@ -1,4 +1,6 @@
 package com.Service.impl;
 
-public class VoiceInformationImpl {
+import com.Service.VoiceInformation;
+
+public class VoiceInformationImpl implements VoiceInformation {
 }

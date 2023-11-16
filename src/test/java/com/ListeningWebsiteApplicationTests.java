@@ -1,11 +1,14 @@
 package com;
 
+import com.Mapper.BookInformationMapper;
+import com.Mapper.PrivateChatMapper;
 import com.Mapper.UserTableMapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.dtos.ResponseResult;
+import com.Service.impl.UserTableImpl;
+import com.entity.BookInformation;
 import com.entity.UserTable;
 import com.enumerate.filetype;
-import com.pool.JWTToken;
+import com.google.gson.Gson;
+import com.pool.*;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
@@ -13,14 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import javax.annotation.Resource;
 import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @SpringBootTest
 class ListeningWebsiteApplicationTests {
@@ -76,10 +75,6 @@ class ListeningWebsiteApplicationTests {
     }
     @Test
     void contextLoads1() {
-//        for (int i = 0; i < 10; i++) {
-//            mapper.insert(new UserTable((long) i,i+"kanghaopeng",i+"kanghaopeng",i+"kanghaopeng",i+"kang","dddddffdaa",new Date(),new Date(),"ttttra"));
-//        }
-
         BufferedReader bufferedReader = null;
         try {
             File file = new File("E:\\code area\\Java_Project\\听书网站\\ListeningWebsite\\src\\main\\resources\\test.txt");
@@ -102,9 +97,43 @@ class ListeningWebsiteApplicationTests {
         }
     }
 
+    @Autowired
+    UserTableImpl userTable;
+  @Autowired
+  UserTableMapper mappera;
     @Test
     void contextLoads3() {
-
+                for (int i = 0; i < 10; i++) {
+                    String salt = SaltStorage.getSalt();
+                    UserTable userTable1 = new UserTable(SaltStorage.getId(), i + "kanghaopeng", SaltedEncryption.encryptWithSalt("kang" + i + "peng", salt), i + "1963470712", i + "kang", "dddddffdaa", new Date(), new Date(), salt, "common");
+                    System.out.println(new Gson().toJson(userTable.enrollAccount(userTable1)));
+                }
     }
 
+    @Autowired
+    BookInformationMapper bookInformationMapper;
+    @Test
+    void contextLoads10() {
+        for (int i = 0; i < 10; i++) {
+            String salt = SaltStorage.getSalt();
+            BookInformation bookInformation = new BookInformation(SaltStorage.getId(), "船夫", PathTool.GETId(), PathTool.GETId(), 1, 1, "ffsadsa", "javakai", 4, 6, new Date(), "aaaaaaaaaaaafa");
+            bookInformationMapper.insert(bookInformation);
+//            mapper.insert(new UserTable(new Random().nextLong(),i+"kanghaopeng", SaltedEncryption.encryptWithSalt("kang" + i + "peng", salt),i+"kanghaopeng",i+"kang","dddddffdaa",new Date(),new Date(),salt,"common"));
+        }
+    }
+    @Autowired
+    PrivateChatMapper privatw;
+
+    @Autowired
+    JWTUtil jwtUtil;
+
+    @Test
+    void contextLoads6() {
+        String kanghaopeng = jwtUtil.generateToken("kanghaopeng");
+        System.out.println(jwtUtil.validateToken(kanghaopeng));
+    }
+
+    public static void main(String[] args) {
+
+    }
 }

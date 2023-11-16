@@ -45,7 +45,7 @@ public class PrivateChat implements Serializable {
     /**
      * 聊天id
      */
-    private Integer dispatcherId;
+    private Long dispatcherId;
 
 }
 

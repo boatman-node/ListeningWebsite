@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.Service.BookInformation">
+<mapper namespace="com.Mapper.BookInformationMapper">
 
     <resultMap type="com.entity.BookInformation" id="BookInformationMap">
         <result property="bookId" column="book_id" jdbcType="BINARY"/>
@@ -32,40 +32,40 @@
         from book_information
         <where>
             <if test="bookId != null">
-                and book_id = #{bookId}
+                and book_id = #{BookInformationMap.bookId}
             </if>
             <if test="bookName != null and bookName != ''">
-                and book_name = #{bookName}
+                and book_name = #{BookInformationMap.bookName}
             </if>
             <if test="bookType != null">
-                and book_type = #{bookType}
+                and book_type = #{BookInformationMap.bookType}
             </if>
             <if test="publisherUser != null">
-                and publisher_user = #{publisherUser}
+                and publisher_user = #{BookInformationMap.publisherUser}
             </if>
             <if test="isAudit != null">
-                and is_audit = #{isAudit}
+                and is_audit = #{BookInformationMap.isAudit}
             </if>
             <if test="isComplete != null">
-                and is_complete = #{isComplete}
+                and is_complete = #{BookInformationMap.isComplete}
             </if>
             <if test="bookHeadportraitUrl != null and bookHeadportraitUrl != ''">
-                and book_headportrait_url = #{bookHeadportraitUrl}
+                and book_headportrait_url = #{BookInformationMap.bookHeadportraitUrl}
             </if>
             <if test="bookDescription != null and bookDescription != ''">
-                and book_description = #{bookDescription}
+                and book_description = #{BookInformationMap.bookDescription}
             </if>
             <if test="collectionQuantity != null">
-                and collection_quantity = #{collectionQuantity}
+                and collection_quantity = #{BookInformationMap.collectionQuantity}
             </if>
             <if test="likesQuantity != null">
-                and likes_quantity = #{likesQuantity}
+                and likes_quantity = #{BookInformationMap.likesQuantity}
             </if>
             <if test="lastLoginTime != null">
-                and last_login_time = #{lastLoginTime}
+                and last_login_time = #{BookInformationMap.lastLoginTime}
             </if>
             <if test="lastLoginChapter != null and lastLoginChapter != ''">
-                and last_login_chapter = #{lastLoginChapter}
+                and last_login_chapter = #{BookInformationMap.lastLoginChapter}
             </if>
         </where>
         limit #{pageable.offset}, #{pageable.pageSize}
@@ -116,9 +116,9 @@
     </select>
 
     <!--新增所有列-->
-    <insert id="insert" keyProperty="bookId" useGeneratedKeys="true">
-        insert into book_information(book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter)
-        values (#{bookName}, #{bookType}, #{publisherUser}, #{isAudit}, #{isComplete}, #{bookHeadportraitUrl}, #{bookDescription}, #{collectionQuantity}, #{likesQuantity}, #{lastLoginTime}, #{lastLoginChapter})
+    <insert id="insert" keyProperty="bookId">
+        insert into book_information(book_id,book_name, book_type, publisher_user, is_audit, is_complete, book_headportrait_url, book_description, collection_quantity, likes_quantity, last_login_time, last_login_chapter)
+        values (#{bookId},#{bookName}, #{bookType}, #{publisherUser}, #{isAudit}, #{isComplete}, #{bookHeadportraitUrl}, #{bookDescription}, #{collectionQuantity}, #{likesQuantity}, #{lastLoginTime}, #{lastLoginChapter})
     </insert>
 
     <insert id="insertBatch" keyProperty="bookId" useGeneratedKeys="true">

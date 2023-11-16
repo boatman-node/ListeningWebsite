@@ -1,48 +1,49 @@
 package com.pool;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import java.security.Key;
+import java.security.SignatureException;
+import java.util.Date;
 
-import java.util.Calendar;
-import java.util.Map;
-
+@Component
 public class JWTUtil {
-    /**
-     * 密钥要⾃⼰保管好,可以放到配置文件中使用@Vaule或者@ConfigurationProperties读取
-     */
-    private static String SECRET = "asdfvgbhnjhgvfcdxs";
 
-    /**
-     * 传⼊payload信息获取token
-     *
-     * @param map payload
-     * @return token
-     */
-    public static String getToken(Map<String, String> map) {
-        JWTCreator.Builder builder = JWT.create();
-        //payload
-        map.forEach(builder::withClaim);
-        Calendar instance = Calendar.getInstance();
-        instance.add(Calendar.DATE, 30); //30天过期
-        builder.withExpiresAt(instance.getTime());//指定令牌的过期时间
-        return builder.sign(Algorithm.HMAC256(SECRET));
+    private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512); // 使用Keys生成安全的密钥
+    private final long expiration = 60 * 60 * 1000; // 令牌过期时间（这里设置为1小时）
+
+    public String generateToken(String username) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + expiration);
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(secretKey)
+                .compact();
     }
 
-    /**
-     * 验证token
-     */
-    public static DecodedJWT verify(String token) {
-        //如果有任何验证异常，此处都会抛出异常
-        return JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token);
+    public String getUsernameFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
     }
 
-    /**
-     * 获取token中的payload
-     */
-    public static Map<String, Claim> getPayloadFromToken(String token) {
-        return JWT.require(Algorithm.HMAC256(SECRET)).build().verify(token).getClaims();
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SignatureException e) {
+            // 签名错误，令牌是无效的
+            return false;
+        }
     }
+
 }

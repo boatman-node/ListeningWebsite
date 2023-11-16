@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface UserTableMapper extends BaseMapper<UserTable> {
+    Integer deleteById(Integer integer);
+    int insert(UserTable userTable);
 }

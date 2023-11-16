@@ -1,4 +1,6 @@
 package com.Service.impl;
 
-public class FavoritesDetailsImpl {
+import com.Service.FavoritesDetails;
+
+public class FavoritesDetailsImpl implements FavoritesDetails {
 }

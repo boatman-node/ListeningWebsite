@@ -58,6 +58,9 @@ public class UserTable implements Serializable {
      * 加盐
      */
     private String userSalt;
-
+    /**
+     * 权限
+     */
+    private String authorityCode;
 }
 

@@ -3,6 +3,7 @@ package com.dtos;
 public enum AppHttpCodeEnum {
     // 成功段固定为200
     SUCCESS(200,"操作成功"),
+    FAIL(400,"操作成功"),
     // 登录段1~50
     NEED_LOGIN(1,"需要登录后操作"),
     LOGIN_PASSWORD_ERROR(2,"密码错误"),

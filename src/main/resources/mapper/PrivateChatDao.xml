@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.Service.PrivateChat">
+<mapper namespace="com.Mapper.PrivateChatMapper">
 
     <resultMap type="com.entity.PrivateChat" id="PrivateChatMap">
         <result property="dispatcherUserId" column="dispatcher_user_id" jdbcType="BINARY"/>
@@ -11,12 +11,22 @@
         <result property="dispatcherId" column="dispatcher_id" jdbcType="INTEGER"/>
     </resultMap>
 
+
+
     <!--查询单个-->
     <select id="queryById" resultMap="PrivateChatMap">
         select
           dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg, dispatcher_id
         from private_chat
         where dispatcher_id = #{dispatcherId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="GetConversation" resultMap="PrivateChatMap">
+        select
+        dispatcher_user_id, recipient_user_id, dispatcher_date, is_revocation, msg, dispatcher_id
+        from private_chat where recipient_user_id = #{recipientUserId} and recipient_user_id = #{recipientUserId}
+                            or recipient_user_id = #{recipientUserId} and recipient_user_id = #{recipientUserId}
     </select>
 
     <!--查询指定行数据-->

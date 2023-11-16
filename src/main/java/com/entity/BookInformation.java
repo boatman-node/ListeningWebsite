@@ -1,5 +1,7 @@
 package com.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +27,7 @@ public class BookInformation implements Serializable {
     /**
      * 书的id
      */
+    @TableId
     private Long bookId;
     /**
      * 书的名字
@@ -33,7 +36,7 @@ public class BookInformation implements Serializable {
     /**
      * 书的类型
      */
-    private Byte bookType;
+    private Long bookType;
     /**
      * 书的发布者
      */

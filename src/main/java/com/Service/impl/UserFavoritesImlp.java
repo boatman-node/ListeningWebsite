@@ -1,4 +1,6 @@
 package com.Service.impl;
 
-public class UserFavoritesImlp {
+import com.Service.UserFavorites;
+
+public class UserFavoritesImlp implements UserFavorites {
 }
